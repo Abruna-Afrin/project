@@ -1,0 +1,27 @@
+databaseType = "MySql"
+id = "6ac67729-9f2d-411a-9fea-8c337900169a"
+name = "shikhi"
+
+[flyway]
+locations = [ "filesystem:migrations" ]
+mixed = true
+outOfOrder = true
+validateMigrationNaming = true
+
+  [flyway.check]
+  majorTolerance = 0
+
+[flywayDesktop]
+developmentEnvironment = "development"
+schemaModel = "schema-model"
+shadowEnvironment = "shadow"
+
+[redgateCompare]
+filterFile = "filter.rgf"
+
+[redgateCompare.mysql.options.ignores]
+ignoreNewlinesInTextObjects = "off"
+
+[environments.target1]
+url = "jdbc:mysql://mysql-shikhi-yousuf-shikhi.f.aivencloud.com:16887"
+schemas = [ "YH_University" ]
