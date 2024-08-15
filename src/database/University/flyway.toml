@@ -1,0 +1,27 @@
+databaseType = "MySql"
+id = "dca1e885-8548-4333-9776-33191533d3fb"
+name = "University"
+
+[flyway]
+locations = [ "filesystem:migrations" ]
+mixed = true
+outOfOrder = true
+validateMigrationNaming = true
+
+  [flyway.check]
+  majorTolerance = 0
+
+[flywayDesktop]
+developmentEnvironment = "development"
+schemaModel = "schema-model"
+shadowEnvironment = "shadow"
+
+[redgateCompare]
+filterFile = "filter.rgf"
+
+[redgateCompare.mysql.options.ignores]
+ignoreNewlinesInTextObjects = "off"
+
+[environments.target1]
+url = "jdbc:mysql://mysql-shikhi-yousuf-shikhi.f.aivencloud.com:16887?allowPublicKeyRetrieval=true&useUnicode=true&passwordCharacterEncoding=UTF-8"
+schemas = [ "University" ]
