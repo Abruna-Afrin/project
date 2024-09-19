@@ -1,6 +1,15 @@
-class UserService:
-    def __init__(self, user_repository):
-        self.user_repository = user_repository
+from app.models.createUser import UserCreate
+from app.repositories.userRepository import call_create_user_procedure
 
-    def create_user(self, first_name, last_name, dob, gender, email, phone, address):
-        return self.user_repository.create_user(first_name, last_name, dob, gender, email, phone, address)
+
+async def create_user(user: UserCreate) -> int:
+    user_id = await call_create_user_procedure(
+        user.first_name,
+        user.last_name,
+        user.dob,
+        user.gender,
+        user.email,
+        user.phone,
+        user.address
+    )
+    return user_id

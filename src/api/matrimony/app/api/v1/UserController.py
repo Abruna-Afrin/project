@@ -1,27 +1,13 @@
-from user_service import UserService
-from user_repository import UserRepository
+from app.models.createUser import UserCreate
+from fastapi import APIRouter, HTTPException
+from app.services.userService import create_user
 
-user_blueprint = Blueprint('user', __name__)
+router = APIRouter()
 
-# Initialize the repository and service with config file
-user_repository = UserRepository(config_file='config.json')
-user_service = UserService(user_repository)
-
-@user_blueprint.route('/create', methods=['POST'])
-def create_user():
-    data = request.get_json()
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    dob = data.get('dob')
-    gender = data.get('gender')
-    email = data.get('email')
-    phone = data.get('phone')
-    address = data.get('address')
-    
-    user_id = user_service.create_user(first_name, last_name, dob, gender, email, phone, address)
-    
-    if user_id:
-        return jsonify({"user_id": user_id}), 201
-    else:
-        return jsonify({"error": "User creation failed"}), 500
-
+@router.post("/")
+async def create_user_endpoint(user: UserCreate):
+    try:
+        user_id = await create_user(user)
+        return {"user_id": user_id}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

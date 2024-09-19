@@ -1,3 +1,5 @@
-Flask>=2.0.0,<3.0.0
-requests>=2.25.0,<3.0.0
-jsonify>=0.5,<1.0
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+python-dotenv
