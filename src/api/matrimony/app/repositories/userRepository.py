@@ -1,36 +1,30 @@
-import mysql.connector
-import json
+from sqlalchemy import create_engine, text
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
 
-class UserRepository:
-    def __init__(self, config_file='config.json'):
-        with open(config_file, 'r') as file:
-            config = json.load(file)
-        
-        db_config = config['database']
-        
-        self.connection = mysql.connector.connect(
-            host=db_config['host'],
-            user=db_config['user'],
-            password=db_config['password'],
-            database=db_config['database']
-        )
-        self.cursor = self.connection.cursor()
+load_dotenv()
 
-    def create_user(self, first_name, last_name, dob, gender, email, phone, address):
-        try:
-            proc_name = 'CreateUser'
-            params = (first_name, last_name, dob, gender, email, phone, address, 0)
-            self.cursor.callproc(proc_name, params)
-            
-            # Fetch the OUT parameter
-            for result in self.cursor.stored_results():
-                user_id = result.fetchone()[0]
-            
-            self.connection.commit()
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+engine = create_async_engine(DATABASE_URL, echo=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, class_=AsyncSession)
+
+async def call_create_user_procedure(first_name: str, last_name: str, dob: str, gender: str, email: str, phone: int, address: str) -> int:
+    async with SessionLocal() as session:
+        async with session.begin():
+            result = await session.execute(
+                text("CALL CreateUser(:first_name, :last_name, :dob, :gender, :email, :phone, :address, @p_UserId); SELECT @p_UserId;"),
+                {
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "dob": dob,
+                    "gender": gender,
+                    "email": email,
+                    "phone": phone,
+                    "address": address
+                }
+            )
+            user_id = result.scalar()
             return user_id
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return None
-        finally:
-            self.cursor.close()
-            self.connection.close()
