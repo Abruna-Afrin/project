@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI
+from app.api.v1.UserController import router as user_router
 
-app = Flask(__name__)
+app = FastAPI()
 
-# Register blueprints
-app.register_blueprint(user_blueprint, url_prefix='/user')
+app.include_router(user_router, prefix="/user")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
