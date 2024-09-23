@@ -15,7 +15,7 @@ async def call_create_user_procedure(first_name: str, last_name: str, dob: str, 
     async with SessionLocal() as session:
         async with session.begin():
             result = await session.execute(
-                text("CALL CreateUser(:first_name, :last_name, :dob, :gender, :email, :phone, :address, @p_UserId); SELECT @p_UserId;"),
+                text("CALL CreateUser(:first_name, :last_name, :dob, :gender, :email, :phone, :address, @p_UserId)"),
                 {
                     "first_name": first_name,
                     "last_name": last_name,
@@ -26,5 +26,5 @@ async def call_create_user_procedure(first_name: str, last_name: str, dob: str, 
                     "address": address
                 }
             )
-            user_id = result.scalar()
+            user_id = (await session.execute(text("SELECT @p_UserId"))).scalar()
             return user_id
