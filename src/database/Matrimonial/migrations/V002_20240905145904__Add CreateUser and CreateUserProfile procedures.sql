@@ -24,7 +24,7 @@ CREATE PROCEDURE CreateUser(
     OUT p_UserId INT
 )
 BEGIN
-    INSERT INTO users (FirstName, LastName, DOB, Gender, Email, Phone, Address)
+    INSERT INTO Users (FirstName, LastName, DOB, Gender, Email, Phone, Address)
     VALUES (p_FirstName, p_LastName, p_DOB, p_Gender, p_Email, p_Phone, p_Address);
     
     SET p_UserId = LAST_INSERT_ID();
