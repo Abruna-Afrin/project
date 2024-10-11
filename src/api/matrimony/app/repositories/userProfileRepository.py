@@ -47,6 +47,7 @@ async def call_create_user_profile_procedure(
             error_list_as_json_string = result.fetchone()[0]
             error_list = json.loads(error_list_as_json_string);
             if len(error_list) > 0:
-                raise Exception(error_list_as_json_string)
+                # throw argument exception
+                raise ValueError(error_list)
             user_profile_id = result.fetchone()[1]
             return error_list
