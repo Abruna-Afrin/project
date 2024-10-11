@@ -16,4 +16,4 @@ async def create_user_endpoint(user: UserCreate):
         return {"user_id": user_id}
     except Exception as e:
         logger.exception("Error creating user")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
