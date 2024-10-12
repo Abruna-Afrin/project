@@ -7,54 +7,57 @@ CREATE PROCEDURE CreateUserProfile(
     IN p_Height VARCHAR(255),
     IN p_Marital_Status VARCHAR(255),
     IN p_Bio VARCHAR(255),
-    OUT p_ErrorListAsJsonString VARCHAR(max),
+    OUT p_ErrorListAsJsonString VARCHAR(1024),
     OUT p_UserProfileId INT
 )
 BEGIN
 
     SET @ErrorList = '[]';
     
-    --add validation
-    --UserId must exist
+    # add validation
+    # UserId must exist
     IF NOT EXISTS (SELECT UserId FROM Users WHERE UserId = p_UserId) THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'UserId does not exist');
     END IF;
 
-    -- nationality cannot be empty or null
+    #  nationality cannot be empty or null
     IF p_Nationality IS NULL OR p_Nationality = '' THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Nationality cannot be empty or null');
     END IF;
 
-    -- religion cannot be empty or null
+    #  religion cannot be empty or null
     IF p_Religion IS NULL OR p_Religion = '' THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Religion cannot be empty or null');
     END IF;
 
-    -- height cannot be empty or null
+    #  height cannot be empty or null
     IF p_Height IS NULL OR p_Height = '' THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Height cannot be empty or null');
     END IF;
 
-    -- marital status cannot be empty or null
+    #  marital status cannot be empty or null
     IF p_Marital_Status IS NULL OR p_Marital_Status = '' THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Marital Status cannot be empty or null');
     END IF;
 
-    -- bio cannot be empty or null
+    #  bio cannot be empty or null
     IF p_Bio IS NULL OR p_Bio = '' THEN
         SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Bio cannot be empty or null');
     END IF;
 
-    -- if error list is not empty, return error list
+    #  if error list is not empty, return error list
+    #  if else logic
     IF JSON_LENGTH(@ErrorList) > 0 THEN
         SET p_ErrorListAsJsonString = @ErrorList;
-        RETURN;
+        SET p_UserProfileId = NULL;
+    ELSE
+        INSERT INTO UserProfiles (UserId, Nationality, Religion, Height, MaritalStatus, Bio)
+        VALUES (p_UserId, p_Nationality, p_Religion, p_Height, p_Marital_Status, p_Bio);
+
+        SET p_ErrorListAsJsonString = '[]';
+        SET p_UserProfileId = LAST_INSERT_ID();
     END IF;
-
-    INSERT INTO UserProfile (UserId, Nationality, Religion, Height, Marital_Status, Bio)
-    VALUES (p_UserId, p_Nationality, p_Religion, p_Height, p_Marital_Status, p_Bio);
-
-    SET p_UserProfileId = LAST_INSERT_ID();
+    
 END //
 
 CREATE PROCEDURE CreateUser(
