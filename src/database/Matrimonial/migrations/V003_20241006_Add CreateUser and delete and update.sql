@@ -47,35 +47,40 @@ BEGIN
     SET p_UserId = LAST_INSERT_ID();
 END //
 
-CREATE PROCEDURE UpdateUsers(
+CREATE PROCEDURE UpdateUser(
     IN p_UserId INT,
     IN p_FirstName VARCHAR(255),
     IN p_LastName VARCHAR(255),
-    In p_DOB DATE,
+    IN p_DOB DATE,
     IN p_Gender VARCHAR(255),
     IN p_Email NVARCHAR(255),
     IN p_Phone BIGINT,
-    IN p_Address NVARCHAR(255) 
+    IN p_Address NVARCHAR(255)
 )
 BEGIN
-IF (SELECT COUNT(*) FROM Users WHERE UserId = p_UserId) = 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
-END IF;
+    -- Ensure user exists
+    DECLARE user_exists INT;
+    SELECT COUNT(*) INTO user_exists FROM Users WHERE UserId = p_UserId;
 
-    -- Update user information 
-    UPDATE Users
-    SET FirstName = coalesce( p_FirstName, FirstName),
-        LastName = coalesce(p_LastName, LastName),
-        DOB = coalesce(p_DOB, DOB) ,
-        Gender = coalesce(p_Gender, Gender), 
-        Email = coalesce( p_Email, Email),
-        Phone = coalesce(p_Phone, Phone),
-        Address = coalesce(p_Address, Address) 
-    WHERE UserId = p_UserId;
+    IF user_exists = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
+    ELSE
+        -- Update user information
+        UPDATE Users
+        SET
+            FirstName = p_FirstName,
+            LastName = p_LastName,
+            DOB = p_DOB,
+            Gender = p_Gender,
+            Email = p_Email,
+            Phone = p_Phone,
+            Address = p_Address
+        WHERE UserId = p_UserId;
 
-    -- Check if the update was successful
-    IF ROW_COUNT() = 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found or no changes made';
+        -- Check if any rows were affected
+        IF ROW_COUNT() = 0 THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No changes made';
+        END IF;
     END IF;
 END //
 
