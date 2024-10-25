@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE PROCEDURE CreateUsers(
+CREATE PROCEDURE CreateUser(
 	IN p_FirstName VARCHAR(255),
     IN p_LastName VARCHAR(255),
     IN p_DOB DATE,
@@ -59,7 +59,7 @@ BEGIN
 
 END //
 
-CREATE  PROCEDURE Update_Users(
+CREATE  PROCEDURE UpdateUser(
 	
     IN p_UserId INT,
     IN p_FirstName VARCHAR(255),
