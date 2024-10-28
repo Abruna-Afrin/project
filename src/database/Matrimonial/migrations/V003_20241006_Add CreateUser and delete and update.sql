@@ -1,104 +1,162 @@
 DELIMITER //
 CREATE PROCEDURE CreateUser(
-    IN p_FirstName VARCHAR(255),
+	IN p_FirstName VARCHAR(255),
     IN p_LastName VARCHAR(255),
     IN p_DOB DATE,
     IN p_Gender VARCHAR(255),
-    IN p_Email NVARCHAR(255),
-    IN p_Phone BIGINT,
-    IN p_Address NVARCHAR(255),
-    OUT p_UserId INT
+    IN p_Email VARCHAR(255),
+    IN p_Phone VARCHAR(255),
+    IN p_Address VARCHAR(255),
+    OUT p_Errors VARCHAR(255)
 )
 BEGIN
-   IF p_FirstName IS NULL OR LENGTH(p_FirstName) < 2 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'First name cannot be null and must be at least 2 characters long';
-    END IF;
 
-    -- Validate last name
-    IF p_LastName IS NULL OR LENGTH(p_LastName) < 2 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Last name cannot be null and must be at least 2 characters long';
+	-- add error table 
+	SET @p_ErrorTable = '[]';
+        
+	-- add validation
+	IF p_FirstName IS NULL OR p_FirstName = '' THEN 
+	SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'FirstName can not be null or empty');
+	END IF; 
+        
+	IF p_LastName IS NULL OR p_LastName = '' THEN 
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'LastName can not be null or empty');
     END IF;
-
-    -- Validate email format
-    IF p_Email IS NULL OR NOT p_Email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email format';
+    
+    IF p_DOB IS NULL THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'DOB can not be null');
     END IF;
-
-    -- Validate phone number is 10 digits
-    IF LENGTH(p_Phone) != 10 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Phone number must be 10 digits';
+    
+    IF p_Gender != 'Male' AND p_Gender != 'Female' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Gender acn only be male or female');
     END IF;
-
-    -- Validate date of birth is not in the future
-    IF p_DOB IS NULL OR p_DOB > CURDATE() THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Date of birth cannot be in the future and Null';
+    
+	IF p_Email IS NULL OR p_Email = '' OR NOT p_Email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Invalid Email Format');
+	END IF;
+	
+    IF p_Phone IS NULL OR p_Phone = '' THEN 
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Phone can not be null or empty');
     END IF;
-
-    -- Validate gender is one of 'Male', 'Female', 'Other'
-    IF p_Gender NOT IN ('Male', 'Female', 'Other') THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid gender value';
+    
+    IF p_Address IS NULL OR p_Address = '' THEN 
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Address can not be null or empty');
     END IF;
-
-    -- Insert valid data into Users table
+    
+    SELECT @p_ErrorTable;
+    
+    IF JSON_LENGTH(@p_ErrorTable) > 0 THEN
+    SET p_Errors = JSON_UNQUOTE(@p_ErrorTable);
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = p_Errors;
+    END IF;
+    
     INSERT INTO Users (FirstName, LastName, DOB, Gender, Email, Phone, Address)
-    VALUES (p_FirstName, p_LastName, p_DOB, p_Gender, p_Email, p_Phone, p_Address);
+    VALUES(p_FirstName, p_LastName, p_DOB, p_Gender, p_Email, p_Phone, p_Address);
+    
+    SELECT last_insert_id() INTO p_Errors;
+    
 
-    -- Return new user ID
-    SET p_UserId = LAST_INSERT_ID();
 END //
 
-CREATE PROCEDURE UpdateUser(
+CREATE  PROCEDURE UpdateUser(
+	
     IN p_UserId INT,
     IN p_FirstName VARCHAR(255),
-    IN p_LastName VARCHAR(255),
+    IN p_LastName varchar(255),
     IN p_DOB DATE,
     IN p_Gender VARCHAR(255),
-    IN p_Email NVARCHAR(255),
-    IN p_Phone BIGINT,
-    IN p_Address NVARCHAR(255)
+    IN p_Email VARCHAR(255),
+    IN p_Phone VARCHAR(255),
+    IN p_Address VARCHAR(255),
+    OUT p_Errors VARCHAR(255)
+    
 )
 BEGIN
-    -- Ensure user exists
-    DECLARE user_exists INT;
-    SELECT COUNT(*) INTO user_exists FROM Users WHERE UserId = p_UserId;
 
-    IF user_exists = 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
-    ELSE
-        -- Update user information
-        UPDATE Users
-        SET
-            FirstName = p_FirstName,
-            LastName = p_LastName,
-            DOB = p_DOB,
-            Gender = p_Gender,
-            Email = p_Email,
-            Phone = p_Phone,
-            Address = p_Address
-        WHERE UserId = p_UserId;
-
-        -- Check if any rows were affected
-        IF ROW_COUNT() = 0 THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No changes made';
-        END IF;
+	-- initiaize error table
+    SET @p_ErrorTable = '[]';
+    
+    -- add validation
+    IF p_FirstName IS NULL OR p_FirstName = '' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'First name cant be null or empty');
     END IF;
+    
+    IF p_LastName IS NULL OR p_LastName = '' THEN 
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'last name cant be null or empty');
+    END IF;
+    
+    IF p_DOB IS NULL THEN 
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'DOB cant be null or empty');
+    END IF;
+    
+    IF  p_Gender!= 'Male' AND  p_Gender != 'Female' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Gender cant be null or empty');
+    END IF;
+    
+    IF p_Email IS NULL OR p_Email = '' OR NOT p_Email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Invalid Email ');
+    END IF;
+    
+    IF p_Phone IS NULL OR p_Phone = '' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'Phone can not be null or empty');
+    END IF;
+    
+    IF p_Address IS NULL OR p_Address = '' THEN
+    SET @p_ErrorTable = JSON_ARRAY_APPEND(@p_ErrorTable, '$', 'ADDRESS can not be null or empty');
+    END IF;
+    -- return errors
+    IF JSON_LENGTH(@p_ErrorTable)> 0 THEN
+    SET p_Errors = JSON_UNQUOTE(@p_ErrorTable);
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
+    END IF;
+    
+    -- update errors
+    UPDATE Users 
+    SET 
+    FirstName = p_FirstName,
+    LastName =p_LastName,
+    DOB =p_DOB,
+    Gender = p_Gender,
+    Email = p_Email,
+    Phone = p_Phone,
+    Address = p_Address
+    WHERE UserId = p_UserId;
+    
+    -- check ANY ROWS AFFECTED
+    IF ROW_COUNT() = 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NO CHANGES MADE OR USER NOT FOUND';
+	END IF;
+    
+    -- return successfull message
+    SET p_Errors = ' User uppdated sucessfully';
+  
 END //
 
 
-CREATE PROCEDURE DeleteUsers(
-	IN p_UserId INT
+CREATE PROCEDURE Delete_User(
+	
+    IN p_UserId INT,
+    OUT p_Errors VARCHAR(255)
 )
 BEGIN
--- Ensure user exists
-    IF (SELECT COUNT(*) FROM Users WHERE UserId = p_UserId) = 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
+	-- ADD ERROR TABLE
+    SET @ErrorTable = '[]';
+	IF(SELECT COUNT(*) FROM Users WHERE UserId = p_UserId) = 0 THEN 
+    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'user id not found');
     END IF;
-	DELETE from Users
-    WHERE UserId = p_UserId;
     
-     IF ROW_COUNT() = 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Failed to delete';
-     END IF;
+    IF JSON_LENGTH(@ErrorTable) > 0 THEN
+    SET p_Errors = JSON_UNQUOTE(@ErrorTable);
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
+    END IF;
+    
+    DELETE FROM Users WHERE UserId = p_UserId;
+    
+	IF ROW_COUNT() = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Failed to delete user';
+    END IF;
+    SET p_Errors = 'User deleted successfully';
 END //
 
 DELIMITER ;
