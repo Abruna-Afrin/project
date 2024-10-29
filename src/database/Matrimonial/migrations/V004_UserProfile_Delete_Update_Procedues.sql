@@ -1,6 +1,6 @@
 DELIMITER //
 
-CREATE PROCEDURE CreateUserProfile(
+CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateUserProfile"(
 	
     IN p_UserId INT,
     IN p_Nationality VARCHAR(255),
@@ -34,9 +34,10 @@ BEGIN
     SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Height can not be null or empty');
     END IF;
 	
-    IF p_Marital_Status IS NULL OR p_Marital_Status = '' THEN
-    SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Marital_Status can not be null or empty');
-    END IF; 
+    
+    IF p_Marital_Status IS NULL OR  (p_Marital_Status != 'Single' AND p_Marital_Status != 'Married' AND p_Marital_Status != 'Divorced') THEN
+        SET @ErrorList =  JSON_ARRAY_APPEND(@ErrorList, '$','Marital_Status can only be Single or Married or Divorced');
+    END IF;
     
 	IF p_Bio IS NULL OR p_Bio = '' THEN
     SET @ErrorList = JSON_ARRAY_APPEND(@ErrorList, '$', 'Bio can not be null or empty');
@@ -48,13 +49,11 @@ BEGIN
 	ELSE
         INSERT INTO User_Profile (UserId, Nationality, Religion, Height, Marital_Status, Bio)
         VALUES (p_UserId, p_Nationality, p_Religion, p_Height, p_Marital_Status, p_Bio);
-        SET p_Errors = '[]';
         SET p_UserProfileId = LAST_INSERT_ID();
     END IF;
 
 END //
-
-CREATE PROCEDURE Update_UserProfile(
+CREATE DEFINER="avnadmin"@"%" PROCEDURE "Update_UserProfile"(
 
 	IN p_ProfileId INT,
     IN p_UserId INT,
@@ -89,9 +88,11 @@ BEGIN
     SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Height can not be null or empty');
     END IF;
     
-    IF p_Marital_Status IS NULL OR p_Marital_Status = '' THEN 
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'Marital Status can not be null or empty');
+   IF p_Marital_Status IS NULL OR  (p_Marital_Status != 'Single' AND p_Marital_Status != 'Married' AND p_Marital_Status != 'Divorced') THEN
+        SET @ErrorTable =  JSON_ARRAY_APPEND(@ErrorTable, '$','Marital_Status can only be Single or Married or Divorced');
     END IF;
+    
+
     
     IF p_Bio IS NULL OR p_Bio = '' THEN
     SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Bio can not be null or empty');
@@ -119,7 +120,7 @@ BEGIN
         
         SET p_Errors = ' Updated Successfully';
 	
-END //
+END//
 
 
 CREATE PROCEDURE Delete_UserProfile(
