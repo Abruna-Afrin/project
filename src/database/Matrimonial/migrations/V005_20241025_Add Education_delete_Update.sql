@@ -6,8 +6,8 @@ CREATE PROCEDURE CreateEducation(
     IN p_Degree VARCHAR(255),
     IN p_Institution VARCHAR(255),
     IN p_FieldOfStudy VARCHAR(255),
-    IN p_StartDate VARCHAR(255),
-    IN p_EndDate VARCHAR(255),
+    IN p_StartDate DATE,
+    IN p_EndDate DATE,
     IN p_GPA DECIMAL(3,2),
     OUT p_UserEducationId INT,
     OUT p_Errors VARCHAR(255)
@@ -67,8 +67,8 @@ CREATE PROCEDURE UpdateEducation(
     IN p_Degree VARCHAR(255),
     IN p_Institution VARCHAR(255),
     IN p_FieldOfStudy VARCHAR(255),
-    IN p_StartDate VARCHAR(255),
-    IN p_EndDate VARCHAR(255),
+    IN p_StartDate DATE,
+    IN p_EndDate DATE,
     IN p_GPA DECIMAL(3,2),
     OUT p_Errors VARCHAR(255)
 )
