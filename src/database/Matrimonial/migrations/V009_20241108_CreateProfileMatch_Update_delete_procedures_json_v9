@@ -40,6 +40,7 @@ BEGIN
     INSERT INTO Profile_Match( Profile1_Id, Profile2_Id, Match_Date, Match_status)
     VALUES(p_Profile1_Id, p_Profile2_Id, p_Match_Date, p_Match_status);
     
+    SET p_Errors = '[]';
     SET p_MatchId = last_insert_id();
     SET p_Errors = 'Profile Match created Successfully';
     end if;
