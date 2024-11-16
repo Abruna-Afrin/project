@@ -1,6 +1,6 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateProfile_Pictures"(
+CREATE PROCEDURE CreateProfile_Pictures(
 
     IN p_UserId int,
     IN p_ProfilePicture BLOB,
@@ -44,7 +44,7 @@ BEGIN
     
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateProfile_Pictures"(
+CREATE PROCEDURE UpdateProfile_Pictures(
 
 	IN p_PictureId int,
 	IN p_UserId int,
@@ -99,7 +99,7 @@ BEGIN
     set p_Errors = 'Updated Profile picture successfully';
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteProfile_Pictures"(
+CREATE PROCEDURE DeleteProfile_Pictures(
 
 	IN p_PictureId int,
     OUT p_Errors VARCHAR(255)
