@@ -1,12 +1,17 @@
-execute following commands
+# To run the project, follow these steps:
 
-# installing the moduels
-pip install fastapi
-pip install uvicorn
-pip install sqlalchemy
-pip install pymysql
-pip install python-dotenv
+1. Clone the repository:
 
+    git clone https://github.com/Avnesh/yh-matrimony-api.git
 
-# running the API
-python -m uvicorn main:app --reload
+2. Navigate to the project directory:
+
+    cd yh-matrimony-api
+
+3. Install the required dependencies:
+
+    pip install -r requirements.txt
+
+4. Run the application:
+
+    uvicorn main:app --reload
