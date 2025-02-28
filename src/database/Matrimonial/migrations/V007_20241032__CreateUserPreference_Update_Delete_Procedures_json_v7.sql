@@ -1,6 +1,7 @@
- DELIMITER //
+DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateUser_Preference"(
+DROP PROCEDURE IF EXISTS CreateUser_Preference //
+CREATE PROCEDURE CreateUser_Preference(
 
     IN p_UserId int,
     IN p_Nationality varchar(255),
@@ -18,49 +19,50 @@ BEGIN
 	SET @ErrorTable = '[]';
     
 	IF NOT EXISTS (SELECT UserId FROM Users WHERE UserId = p_UserId) THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'UserId not exists');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'UserId not exists');
     END IF ;
     
     IF p_Nationality IS NULL OR p_Nationality = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Nationality can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Nationality can not be null or empty');
     END IF ;
     
      IF p_Religion IS NULL OR p_Religion = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Religion can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Religion can not be null or empty');
     END IF ;
     
 	IF p_Height IS NULL OR p_Height = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Height can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Height can not be null or empty');
     END IF ;
     
     IF p_Education IS NULL OR p_Education = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Education can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Education can not be null or empty');
     END IF ;
     
     IF p_Occupation IS NULL OR p_Occupation = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation can not be null or empty');
     END IF ;
     
     IF p_Location IS NULL OR p_Location = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Location can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Location can not be null or empty');
     END IF ;
     
     IF JSON_LENGTH(@ErrorTable) > 0 THEN
-    SET p_Errors = JSON_UNQUOTE(@ErrorTable);
-    SET p_UserPreId = NULL;
+        SET p_Errors = JSON_UNQUOTE(@ErrorTable);
+        SET p_UserPreId = NULL;
     
     ELSE 
-    INSERT INTO User_Preference( UserId, Nationality, Religion, Height, Education, Occupation, Location)
-    VALUES(p_UserId, p_Nationality, p_Religion, p_Height, p_Education, p_Occupation, p_Location);
+        INSERT INTO User_Preference( UserId, Nationality, Religion, Height, Education, Occupation, Location)
+            VALUES(p_UserId, p_Nationality, p_Religion, p_Height, p_Education, p_Occupation, p_Location);
     
-    SET p_Errors = '[]';
-    SET p_UserPreId = LAST_INSERT_ID();
-    SET p_Errors = 'User Preference inserted successfully';
+        SET p_Errors = '[]';
+        SET p_UserPreId = LAST_INSERT_ID();
+        SET p_Errors = 'User Preference inserted successfully';
     END IF;
 
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateUserPreference"(
+DROP PROCEDURE IF EXISTS UpdateUserPreference //
+CREATE PROCEDURE UpdateUserPreference(
 
 	IN p_UserPreId INT,
     IN p_UserId int,
@@ -94,24 +96,24 @@ BEGIN
     END IF ;
     
 	IF p_Height IS NULL OR p_Height = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Height can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Height can not be null or empty');
     END IF ;
     
     IF p_Education IS NULL OR p_Education = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Education can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Education can not be null or empty');
     END IF ;
     
     IF p_Occupation IS NULL OR p_Occupation = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation can not be null or empty');
     END IF ;
     
     IF p_Location IS NULL OR p_Location = '' THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Location can not be null or empty');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Location can not be null or empty');
     END IF ;
     
     IF JSON_LENGTH(@ErrorTable) > 0 THEN
-    SET p_Errors = JSON_UNQUOTE(@ErrorTable);
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
+        SET p_Errors = JSON_UNQUOTE(@ErrorTable);
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
     END IF ;
     
     UPDATE User_Preference
@@ -136,32 +138,32 @@ BEGIN
      
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteUserPreference"(
+DROP PROCEDURE IF EXISTS DeleteUserPreference //
+CREATE PROCEDURE DeleteUserPreference(
 
 	IN p_UserPreId INT,
     OUT p_Errors VARCHAR(255)
 )
 BEGIN
-
 	SET @ErrorTable = '[]';
     
     IF (SELECT COUNT(*) FROM User_Preference WHERE PreId = p_UserPreId) = 0 THEN
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Preid not found');
+        SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Preid not found');
     END IF;
     
     IF JSON_LENGTH(@ErrorTable) > 0 THEN
-    SET p_Errors = JSON_UNQUOTE(@ErrorTable);
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
+        SET p_Errors = JSON_UNQUOTE(@ErrorTable);
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
     END IF;
     
     DELETE
     FROM User_Preference WHERE PreId =  p_UserPreId;
     
     IF ROW_COUNT() = 0 THEN
-    SIGNAL SQLSTATE '45000' set MESSAGE_TEXT = 'No changes made';
+        SIGNAL SQLSTATE '45000' set MESSAGE_TEXT = 'No changes made';
     END IF;
     
     SET p_Errors = 'Deleted usser preference successfully';
 
 END //
- DELIMITER ;
+DELIMITER ;

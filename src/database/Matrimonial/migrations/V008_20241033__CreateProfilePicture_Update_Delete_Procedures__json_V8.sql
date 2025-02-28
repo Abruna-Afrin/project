@@ -1,5 +1,6 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS CreateProfile_Pictures //
 CREATE PROCEDURE CreateProfile_Pictures(
 
     IN p_UserId int,
@@ -44,6 +45,7 @@ BEGIN
     
 END //
 
+DROP PROCEDURE IF EXISTS UpdateProfile_Pictures //
 CREATE PROCEDURE UpdateProfile_Pictures(
 
 	IN p_PictureId int,
@@ -99,6 +101,7 @@ BEGIN
     set p_Errors = 'Updated Profile picture successfully';
 END //
 
+DROP PROCEDURE IF EXISTS DeleteProfile_Pictures //
 CREATE PROCEDURE DeleteProfile_Pictures(
 
 	IN p_PictureId int,
@@ -127,4 +130,4 @@ BEGIN
     
 END //
 
-DELIMITER;
+DELIMITER ;

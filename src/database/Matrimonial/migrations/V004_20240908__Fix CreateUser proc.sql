@@ -1,13 +1,8 @@
-USE `YH_Matrimony`;
-DROP procedure IF EXISTS `CreateUser`;
+DELIMITER //
 
-USE `YH_Matrimony`;
-DROP procedure IF EXISTS `YH_Matrimony`.`CreateUser`;
-;
+DROP PROCEDURE IF EXISTS CreateUser //
 
-DELIMITER $$
-USE `YH_Matrimony`$$
-CREATE  PROCEDURE "CreateUser"(
+CREATE PROCEDURE CreateUser(
     IN p_FirstName VARCHAR(255),
     IN p_LastName VARCHAR(255),
     IN p_DOB DATE,
@@ -48,7 +43,6 @@ BEGIN
     VALUES (p_FirstName, p_LastName, p_DOB, p_Gender, p_Email, p_Phone, p_Address);
     
     SET p_UserId = LAST_INSERT_ID();
-END$$
+END //
 
 DELIMITER ;
-;

@@ -25,3 +25,7 @@ ignoreNewlinesInTextObjects = "off"
 [environments.target1]
 url = "jdbc:mysql://mysql-shikhi-yousuf-shikhi.f.aivencloud.com:16887"
 schemas = [ "YH_Matrimony" ]
+
+[environments.local_matrimonial]
+url = "jdbc:mysql://localhost:3306"
+schemas = [ "Matrimonial" ]

@@ -1,4 +1,6 @@
 DELIMITER //
+
+DROP PROCEDURE IF EXISTS CreateUser //
 CREATE PROCEDURE CreateUser(
 	IN p_FirstName VARCHAR(255),
     IN p_LastName VARCHAR(255),
@@ -59,6 +61,7 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS Update_User //
 CREATE  PROCEDURE UpdateUser(
 	
     IN p_UserId INT,
@@ -133,7 +136,7 @@ BEGIN
   
 END //
 
-
+DROP PROCEDURE IF EXISTS Delete_User //
 CREATE PROCEDURE Delete_User(
 	
     IN p_UserId INT,

@@ -1,6 +1,7 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateOccupation"(
+DROP PROCEDURE IF EXISTS CreateOccupation //
+CREATE PROCEDURE CreateOccupation(
 
 	IN p_UserId INT,
     IN p_Occupation_Title varchar(255),       
@@ -47,7 +48,9 @@ BEGIN
     END IF;
 
 END //
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateEducation"(
+
+DROP PROCEDURE IF EXISTS UpdateEducation //
+CREATE PROCEDURE UpdateEducation(
 
 	IN p_UserEducationId INT,
     IN p_UserId INT,
@@ -119,14 +122,15 @@ BEGIN
     set p_Errors = 'Updated User Education Successfully';
     
 END //
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteOccupation"(
+
+DROP PROCEDURE IF EXISTS DeleteOccupation //
+CREATE PROCEDURE DeleteOccupation(
 	
     IN p_OccupationId INT,
     OUT p_Errors VARCHAR(255)
 
 )
 BEGIN
-	
     SET @ErrorTable = '[]';
 	IF NOT EXISTS( SELECT COUNT(*) FROM Occupation WHERE OccupationId = p_OccupationId) = 0 THEN
     SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation Id does not exist');

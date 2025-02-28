@@ -1,6 +1,7 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateUserProfile"(
+DROP PROCEDURE IF EXISTS CreateUserProfile //
+CREATE PROCEDURE CreateUserProfile(
 	
     IN p_UserId INT,
     IN p_Nationality VARCHAR(255),
@@ -53,7 +54,9 @@ BEGIN
     END IF;
 
 END //
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "Update_UserProfile"(
+
+DROP PROCEDURE IF EXISTS Update_UserProfile //
+CREATE PROCEDURE Update_UserProfile(
 
 	IN p_ProfileId INT,
     IN p_UserId INT,
@@ -122,7 +125,7 @@ BEGIN
 	
 END//
 
-
+DROP PROCEDURE IF EXISTS Delete_UserProfile //
 CREATE PROCEDURE Delete_UserProfile(
 
 	IN p_ProfileId INT,
