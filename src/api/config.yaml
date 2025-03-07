@@ -1,9 +1,0 @@
-database:
-  host: "localhost"
-  user: "root"
-  password: "password"
-  database: "your_database"
-
-logging:
-  elasticsearch_host: "http://localhost:9200"
-  index: "user_repository_logs"
