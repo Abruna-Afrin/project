@@ -1,6 +1,7 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateContact"(
+DROP PROCEDURE IF EXISTS CreateContact //
+CREATE PROCEDURE CreateContact(
 
     IN p_Con1_Id int,
     IN p_Con2_Id int,
@@ -39,7 +40,8 @@ BEGIN
 
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteContact"(
+DROP PROCEDURE IF EXISTS DeleteContact //
+CREATE PROCEDURE DeleteContact(
 
 	IN p_ContactId int,
     OUT p_Errors VARCHAR(255)
@@ -65,7 +67,8 @@ BEGIN
     SET p_Errors = ' User Contact deleted succcessfully';
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateContact"(
+DROP PROCEDURE IF EXISTS UpdateContact //
+CREATE PROCEDURE UpdateContact(
 
 	IN p_ContactId int,
     IN p_Con1_Id int,

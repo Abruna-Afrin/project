@@ -1,6 +1,7 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateProfile_Match"(
+DROP PROCEDURE IF EXISTS CreateProfile_Match //
+CREATE PROCEDURE CreateProfile_Match(
 
     IN p_Profile1_Id INT,
     IN p_Profile2_Id INT,
@@ -45,7 +46,9 @@ BEGIN
     SET p_Errors = 'Profile Match created Successfully';
     end if;
 END //
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdteProfile_Match"(
+
+DROP PROCEDURE IF EXISTS UpdateProfile_Match //
+CREATE PROCEDURE UpdateProfile_Match(
 
 	IN p_MatchId INT,
     IN p_Profile1_Id INT,
@@ -100,7 +103,8 @@ BEGIN
     
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteProfile_Match"(
+DROP PROCEDURE IF EXISTS DeleteProfile_Match //
+CREATE PROCEDURE DeleteProfile_Match(
 
 	IN  p_MatchId INT,
     OUT p_Errors VARCHAR(255)
