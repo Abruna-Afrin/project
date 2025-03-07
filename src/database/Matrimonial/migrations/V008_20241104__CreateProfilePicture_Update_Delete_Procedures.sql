@@ -1,6 +1,7 @@
 DELIMITER //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "CreateProfile_Pictures"(
+DROP PROCEDURE IF EXISTS CreateProfile_Pictures //
+CREATE PROCEDURE CreateProfile_Pictures(
 
     IN p_UserId int,
     IN p_ProfilePicture BLOB,
@@ -44,7 +45,8 @@ BEGIN
     
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateProfile_Pictures"(
+DROP PROCEDURE IF EXISTS UpdateProfile_Pictures //
+CREATE PROCEDURE UpdateProfile_Pictures(
 
 	IN p_PictureId int,
 	IN p_UserId int,
@@ -52,7 +54,6 @@ CREATE DEFINER="avnadmin"@"%" PROCEDURE "UpdateProfile_Pictures"(
     IN p_PictureType VARCHAR(255),
     IN p_UploadDate date,
     OUT p_Errors VARCHAR(255)
-
 )
 BEGIN
 
@@ -99,7 +100,8 @@ BEGIN
     set p_Errors = 'Updated Profile picture successfully';
 END //
 
-CREATE DEFINER="avnadmin"@"%" PROCEDURE "DeleteProfile_Pictures"(
+DROP PROCEDURE IF EXISTS DeleteProfile_Pictures //
+CREATE PROCEDURE DeleteProfile_Pictures(
 
 	IN p_PictureId int,
     OUT p_Errors VARCHAR(255)

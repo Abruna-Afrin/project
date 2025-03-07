@@ -1,5 +1,6 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS CreateEducation //
 CREATE PROCEDURE CreateEducation(
 
 	IN p_UserId INT,
@@ -60,6 +61,7 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS UpdateEducation //
 CREATE PROCEDURE UpdateEducation(
 
 	IN p_UserEducationId INT,
@@ -133,6 +135,7 @@ BEGIN
     
 END //
 
+DROP PROCEDURE IF EXISTS DeleteEducation //
 CREATE PROCEDURE DeleteEducation(
 
 	IN p_EducationId INT,

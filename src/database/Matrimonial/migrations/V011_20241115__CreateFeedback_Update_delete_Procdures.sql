@@ -1,5 +1,6 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS CreateFeedback //
 CREATE PROCEDURE CreateFeedback(
  
     IN p_UserId int,
@@ -39,6 +40,7 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS UpdateFeedback //
 CREATE  PROCEDURE UpdateFeedback(
  
     IN p_FeedbackId int,
@@ -88,6 +90,7 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS DeleteFeedback //
 CREATE PROCEDURE DeleteFeedback(
 
 	IN p_FeedbackId int,
