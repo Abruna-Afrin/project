@@ -7,7 +7,7 @@ async def create_user_profile(user: UserProfile) -> int:
     user.Nationality,
     user.Religion,
     user.Height,
-    user.arital_Status,
+    user.Marital_Status,
     user.Bio
    
     )
