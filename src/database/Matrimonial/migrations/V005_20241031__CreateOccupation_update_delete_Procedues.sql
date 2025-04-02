@@ -101,7 +101,7 @@ BEGIN
     OccupationTitle = p_Occupation_Title,
 	OccupationDescription =p_Occupation_Description,
     AverageSalary = p_AverageSalary ,
-    DateAdded = p_DateAdded,
+    DateAdded = p_DateAdded
     Where OccupationId = p_UserOccupationId;
     
     if row_count() = 0 then
