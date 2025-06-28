@@ -5,3 +5,6 @@ pip install -r requirements.txt
 
 # run the application
 python main.py
+
+
+link: http://localhost:8000/docs#/
