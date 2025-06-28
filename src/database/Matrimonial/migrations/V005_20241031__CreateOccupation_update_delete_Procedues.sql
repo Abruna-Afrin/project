@@ -49,53 +49,44 @@ BEGIN
 
 END //
 
-DROP PROCEDURE IF EXISTS UpdateEducation //
-CREATE PROCEDURE UpdateEducation(
+DROP PROCEDURE IF EXISTS UpdateOccupation //
+CREATE PROCEDURE UpdateOccupation(
 
-	IN p_UserEducationId INT,
+	IN p_UserOccupationId  INT,
     IN p_UserId INT,
-    IN p_Degree VARCHAR(255),
-    IN p_Institution VARCHAR(255),
-    IN p_FieldOfStudy VARCHAR(255),
-    IN p_StartDate date,
-    IN p_EndDate DATE,
-    IN p_GPA DECIMAL(3,2),
+     IN p_Occupation_Title varchar(255),       
+    IN p_Occupation_Description text,                           
+    IN p_AverageSalary decimal(12, 2),                 
+    IN p_DateAdded date,
     OUT p_Errors VARCHAR(255)
 )
 BEGIN
 
 	SET @ErrorTable = '[]';
     
-    IF NOT EXISTS(SELECT COUNT(*) FROM Education WHERE EducationId = p_UserEducationId) then
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'EducationId does not exists');
+    IF NOT EXISTS(SELECT COUNT(*) FROM occupation WHERE OccupationId = p_UserOccupationId ) then
+    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'OccupationId does not exists');
     END IF;
     
     IF NOT EXISTS (SELECT COUNT(*) FROM Users WHERE UserId = p_UserId) then
     SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'UserId does not exists');
     END IF;
     
-    IF p_Degree IS NULL OR p_Degree = '' THEN 
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Degree can not be null or empty');
+    IF p_Occupation_Title IS NULL OR p_Occupation_Title = '' THEN 
+    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation_Title can not be null or empty');
     End if ;
     
-    IF p_Institution IS NULL OR p_Institution = '' THEN 
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Institution can not be null or empty');
+    IF p_Occupation_Description IS NULL OR p_Occupation_Description = '' THEN 
+    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable, '$', 'Occupation_Description can not be null or empty');
     END IF ;
     
-     IF p_FieldOfStudy IS NULL OR p_FieldOfStudy = '' THEN 
-    SET @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'FieldOfStudy can not be null or empty');
+   
+	IF p_DateAdded IS NULL OR p_DateAdded = '' THEN 
+    SET  @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'Date can not be null or empty');
     END IF;
     
-    IF p_StartDate IS NULL OR p_StartDate = '' THEN 
-    SET  @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'StartDate can not be null or empty');
-    END IF;
-    
-	IF p_EndDate IS NULL OR p_EndDate = '' THEN 
-    SET  @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'EndDate can not be null or empty');
-    END IF;
-    
-    IF p_GPA IS NULL OR p_GPA < 0 OR p_GPA > 4 THEN
-    SET  @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'GPA must be between 0.00 and 4.00');
+    IF p_AverageSalary IS NULL THEN
+    SET  @ErrorTable = JSON_ARRAY_APPEND(@ErrorTable,'$', 'AverageSalary can not be null');
     END IF;
     
     IF JSON_LENGTH(@ErrorTable)>0 THEN
@@ -103,23 +94,21 @@ BEGIN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = p_Errors;
     END IF;
     
-    UPDATE Education
+    UPDATE Occupation
     SET 
-    EducationId = p_UserEducationId,
+    OccupationId = p_UserOccupationId,
 	UserId = p_UserId,
-    Degree = p_Degree,
-	Institution = p_Institution,
-    FieldOfStudy = p_FieldOfStudy ,
-    StartDate = p_StartDate,
-    EndDate = p_EndDate,
-    GPA = p_GPA
-    Where EducationId = p_UserEducationId;
+    OccupationTitle = p_Occupation_Title,
+	OccupationDescription =p_Occupation_Description,
+    AverageSalary = p_AverageSalary ,
+    DateAdded = p_DateAdded
+    Where OccupationId = p_UserOccupationId;
     
     if row_count() = 0 then
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = ' No changes made';
     End if;
     
-    set p_Errors = 'Updated User Education Successfully';
+    set p_Errors = 'Updated User occpation Successfully';
     
 END //
 

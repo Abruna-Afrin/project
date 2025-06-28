@@ -1,9 +1,17 @@
 from fastapi import FastAPI
 from app.api.v1.UserController import router as user_router
+from app.api.v1.UserProfileController import router as user_profile_router
+from app.api.v1.UserEducationController import router as user_education_router
+from app.api.v1.UserOccupationController import router as user_occupation_router
+from app.api.v1.UserPreferenceController import router as user_preference_router
 
 app = FastAPI()
 
 app.include_router(user_router, prefix="/user")
+app.include_router(user_profile_router, prefix="/userprofile")
+app.include_router(user_education_router, prefix="/usereducation")
+app.include_router(user_occupation_router, prefix="/useroccupation")
+app.include_router(user_preference_router, prefix ="/userpreference")
 
 if __name__ == "__main__":
     import uvicorn
